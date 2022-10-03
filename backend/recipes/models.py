@@ -1,5 +1,8 @@
+from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator
 from django.db import models
+
+User = get_user_model()
 
 
 class Ingredient(models.Model):
@@ -18,6 +21,30 @@ class Ingredient(models.Model):
 
     def __str__(self):
         return f'{self.name}, {self.measurement_unit}'
+
+
+class Tag(models.Model):
+    name = models.CharField(
+        verbose_name='Название',
+        max_length=16,
+        unique=True
+    )
+    color = models.CharField(
+        max_length=16,
+        verbose_name='Цвет'
+    )
+    slug = models.SlugField(
+        max_length=16,
+        verbose_name='Слаг',
+        unique=True
+    )
+
+    class Meta:
+        verbose_name = 'Тег'
+        verbose_name_plural = 'Теги'
+
+    def __str__(self):
+        return f'{self.name}'
 
 
 class Recipe(models.Model):
@@ -41,7 +68,24 @@ class Recipe(models.Model):
         validators=(MinValueValidator
                     (limit_value=1,
                      message='Время приготовления не может быть менее одной '
-                             'минуты. '
+                             'минуты.'
                      ),
                     )
     )
+    author = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='recipes',
+        verbose_name='Автор'
+    )
+    tags = models.ManyToManyField(
+        Tag,
+        verbose_name='Теги'
+    )
+
+    class Meta:
+        verbose_name = 'Рецепт'
+        verbose_name_plural = 'Рецепты'
+
+    def __str__(self):
+        return f'{self.name[:50]}'
