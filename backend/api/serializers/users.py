@@ -2,7 +2,7 @@ from djoser.serializers import UserCreateSerializer, UserSerializer
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import SerializerMethodField
 
-from .models import User, Follow
+from users.models import User, Follow
 
 
 class UsersCreateSerializer(UserCreateSerializer):
@@ -28,6 +28,7 @@ class UsersCreateSerializer(UserCreateSerializer):
 
 class UsersSerializer(UserSerializer):
     is_subscribed = SerializerMethodField(read_only=True)
+
     class Meta:
         model = User
         fields = (
@@ -44,3 +45,18 @@ class UsersSerializer(UserSerializer):
         if user.is_anonymous:
             return False
         return Follow.objects.filter(user=user, author=object.id).exists()
+
+
+class FollowSerializer(UsersSerializer):
+    # recipes = SerializerMethodField(read_only=True)
+    recipes_count = SerializerMethodField(read_only=True)
+
+    class Meta(UsersSerializer.Meta):
+        fields = UsersSerializer.Meta.fields + ('recipes', 'recipes_count')
+
+
+    def get_recipes(self, object):
+        pass
+
+    def get_recipes_count(self, object):
+        return object.recipes.count()
