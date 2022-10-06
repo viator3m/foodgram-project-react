@@ -14,7 +14,6 @@ class UsersViewSet(UserViewSet):
     serializer_class = UsersSerializer
     permission_classes = (IsAuthenticatedOrReadOnly,)
 
-
     @action(methods=['POST', 'DELETE'],
             detail=True,)
     def subscribe(self, request, id):
