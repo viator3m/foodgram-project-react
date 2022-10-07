@@ -134,3 +134,4 @@ dmypy.json
 # static files
 
 /backend/static/
+/backend/recipes_image/

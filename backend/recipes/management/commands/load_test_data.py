@@ -7,7 +7,7 @@ from users.models import User
 
 MODELS_FILES = {
     User: 'users.csv',
-    Recipe: 'recipes.csv'
+   # Recipe: 'recipes.csv'
 }
 
 

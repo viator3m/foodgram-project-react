@@ -3,12 +3,10 @@ import csv
 from foodgram import settings
 from django.core.management import BaseCommand
 from recipes.models import Ingredient, Tag
-from users.models import User
 
 MODELS_FILES = {
     Ingredient: 'ingredients.csv',
     Tag: 'tags.csv',
-    User: 'users.csv'
 }
 
 

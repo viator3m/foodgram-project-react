@@ -5,6 +5,7 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 
+from api.paginations import LimitPagination
 from users.models import User, Follow
 from api.serializers.users import UsersSerializer, FollowSerializer
 
@@ -13,6 +14,7 @@ class UsersViewSet(UserViewSet):
     queryset = User.objects.all()
     serializer_class = UsersSerializer
     permission_classes = (IsAuthenticatedOrReadOnly,)
+    pagination_class = LimitPagination
 
     @action(methods=['POST', 'DELETE'],
             detail=True,)

@@ -9,7 +9,7 @@ User = get_user_model()
 class Ingredient(models.Model):
     name = models.CharField(
         verbose_name='Название ингредиента',
-        max_length=50
+        max_length=100
     )
     measurement_unit = models.CharField(
         verbose_name='Единица измерения',
@@ -90,6 +90,7 @@ class Recipe(models.Model):
     )
 
     class Meta:
+        ordering = ['-pub_date']
         verbose_name = 'Рецепт'
         verbose_name_plural = 'Рецепты'
 
