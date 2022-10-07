@@ -57,7 +57,7 @@ class Recipe(models.Model):
     )
     image = models.ImageField(
         verbose_name='Картинка',
-        upload_to='recipes_image/'
+        upload_to='recipes/'
     )
     name = models.CharField(
         verbose_name='Название',
@@ -82,7 +82,8 @@ class Recipe(models.Model):
     )
     tags = models.ManyToManyField(
         Tag,
-        verbose_name='Теги'
+        verbose_name='Теги',
+        related_name='recipes'
     )
     pub_date = models.DateTimeField(
         auto_now=True,
