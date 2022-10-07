@@ -131,3 +131,31 @@ class RecipeIngredient(models.Model):
 
     def __str__(self):
         return f'{self.recipe}: {self.ingredient}, {self.amount}'
+
+
+class Favorite(models.Model):
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        verbose_name='Пользователь',
+        related_name='favorite'
+    )
+    recipe = models.ForeignKey(
+        Recipe,
+        on_delete=models.CASCADE,
+        verbose_name='Рецепты',
+        related_name='favorite'
+    )
+
+    class Meta:
+        verbose_name = 'Избранный рецепт'
+        verbose_name_plural = 'Избранные рецепты'
+        constraints = (
+            UniqueConstraint(
+                fields=('user', 'recipe'),
+                name='unique favorite'
+            ),
+        )
+
+    def __str__(self):
+        return f'{self.recipe} в избранном у {self.user}'

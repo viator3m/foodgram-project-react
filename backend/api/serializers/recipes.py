@@ -2,10 +2,12 @@ import base64
 
 from django.core.files.base import ContentFile
 from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
+from rest_framework.validators import UniqueTogetherValidator
 
 from api.serializers.users import UsersSerializer
-from recipes.models import Ingredient, Recipe, Tag, RecipeIngredient
-
+from recipes.models import Ingredient, Recipe, Tag, RecipeIngredient, Favorite
+from users.models import User
 
 class Base64ImageField(serializers.ImageField):
     def to_internal_value(self, data):
@@ -114,3 +116,27 @@ class GetRecipeSerializer(serializers.ModelSerializer):
 
     def get_is_in_shopping_cart(self, object):
         return True
+
+
+class FavoriteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Favorite
+        fields = ('user', 'recipe')
+
+    def validate(self, data):
+        user, recipe = data.get('user'), data.get('recipe')
+        if Favorite.objects.filter(user=user, recipe=recipe).exists():
+            raise ValidationError({'error': 'Этот рецепт уже в списке избранных'})
+        return data
+
+    def to_representation(self, instance):
+        context = {'request': self.context.get('request')}
+        recipe = instance.recipe
+        return RecipeInfoSerializer(recipe, context=context).data
+
+
+class RecipeInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Recipe
+        fields = ('id', 'name', 'image', 'cooking_time')
+
