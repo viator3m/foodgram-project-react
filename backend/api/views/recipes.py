@@ -17,9 +17,9 @@ from recipes.models import Ingredient, Recipe, Tag, Favorite
 class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
-    permission_classes = (AllowAny,)
     filter_backends = (DjangoFilterBackend,)
     filterset_class = IngredientFilter
+    permission_classes = (AllowAny,)
     pagination_class = None
 
 
@@ -57,6 +57,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
 class TagViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Tag.objects.all()
-    permission_classes = (AllowAny,)
     serializer_class = TagSerializer
+    permission_classes = (AllowAny,)
     pagination_class = None
