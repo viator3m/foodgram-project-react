@@ -48,15 +48,22 @@ class UsersSerializer(UserSerializer):
 
 
 class FollowSerializer(UsersSerializer):
-    # recipes = SerializerMethodField(read_only=True)
+    recipes = SerializerMethodField(read_only=True)
     recipes_count = SerializerMethodField(read_only=True)
 
     class Meta(UsersSerializer.Meta):
         fields = UsersSerializer.Meta.fields + ('recipes', 'recipes_count')
 
-
     def get_recipes(self, object):
-        pass
+        from api.serializers.recipes import RecipeInfoSerializer
+
+        request = self.context.get('request')
+        context = {'request': request}
+        recipe_limit = request.query_params.get('recipe_limit')
+        queryset = object.recipes.all()
+        if recipe_limit:
+            queryset = queryset[:int(recipe_limit)]
+        return RecipeInfoSerializer(queryset, context=context, many=True).data
 
     def get_recipes_count(self, object):
         return object.recipes.count()
