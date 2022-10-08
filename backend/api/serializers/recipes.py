@@ -3,11 +3,11 @@ import base64
 from django.core.files.base import ContentFile
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
-from rest_framework.validators import UniqueTogetherValidator
 
 from api.serializers.users import UsersSerializer
-from recipes.models import Ingredient, Recipe, Tag, RecipeIngredient, Favorite
-from users.models import User
+from recipes.models import (Ingredient, Recipe, Tag, RecipeIngredient,
+                            Favorite, ShoppingCart)
+
 
 class Base64ImageField(serializers.ImageField):
     def to_internal_value(self, data):
@@ -33,9 +33,12 @@ class IngredientSerializer(serializers.ModelSerializer):
 
 
 class RecipeIngredientSerializer(serializers.ModelSerializer):
-    name = serializers.CharField(source='ingredient.name', read_only=True)
-    id = serializers.PrimaryKeyRelatedField(source='ingredient.id', read_only=True)
-    measurement_unit = serializers.CharField(source='ingredient.measurement_unit', read_only=True)
+    name = serializers.CharField(
+        source='ingredient.name', read_only=True)
+    id = serializers.PrimaryKeyRelatedField(
+        source='ingredient.id', read_only=True)
+    measurement_unit = serializers.CharField(
+        source='ingredient.measurement_unit', read_only=True)
 
     class Meta:
         model = RecipeIngredient
@@ -46,6 +49,7 @@ class AddIngredientSerializer(serializers.ModelSerializer):
     id = serializers.PrimaryKeyRelatedField(
         queryset=Ingredient.objects.all(),
         source='ingredient')
+
     class Meta:
         model = RecipeIngredient
         fields = ('id', 'amount')
@@ -92,8 +96,7 @@ class RecipeSerializer(serializers.ModelSerializer):
         return super().update(instance, validated_data)
 
     def to_representation(self, instance):
-        request = self.context.get('request')
-        context = {'request': request}
+        context = {'request': self.context.get('request')}
         return GetRecipeSerializer(instance, context=context).data
 
 
@@ -117,9 +120,11 @@ class GetRecipeSerializer(serializers.ModelSerializer):
             return False
         return object.favorite.filter(user=user).exists()
 
-
     def get_is_in_shopping_cart(self, object):
-        return True
+        user = self.context.get('request').user
+        if user.is_anonymous:
+            return False
+        return object.shopping_cart.filter(user=user).exists()
 
 
 class FavoriteSerializer(serializers.ModelSerializer):
@@ -129,18 +134,23 @@ class FavoriteSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         user, recipe = data.get('user'), data.get('recipe')
-        if Favorite.objects.filter(user=user, recipe=recipe).exists():
-            raise ValidationError({'error': 'Этот рецепт уже в списке избранных'})
+        if self.Meta.model.objects.filter(user=user, recipe=recipe).exists():
+            raise ValidationError(
+                {'error': 'Этот рецепт уже добавлен'}
+            )
         return data
 
     def to_representation(self, instance):
         context = {'request': self.context.get('request')}
-        recipe = instance.recipe
-        return RecipeInfoSerializer(recipe, context=context).data
+        return RecipeInfoSerializer(instance.recipe, context=context).data
+
+
+class ShoppingCartSerializer(FavoriteSerializer):
+    class Meta(FavoriteSerializer.Meta):
+        model = ShoppingCart
 
 
 class RecipeInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Recipe
         fields = ('id', 'name', 'image', 'cooking_time')
-
