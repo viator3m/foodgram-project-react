@@ -1,5 +1,9 @@
+from django.db.models import F
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
+from reportlab.pdfbase import ttfonts, pdfmetrics
+from reportlab.pdfgen import canvas
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny
@@ -13,7 +17,7 @@ from api.serializers.recipes import (IngredientSerializer,
                                      FavoriteSerializer,
                                      ShoppingCartSerializer)
 from api.filters import RecipeFilter, IngredientFilter
-from recipes.models import Ingredient, Recipe, Tag
+from recipes.models import Ingredient, Recipe, Tag, RecipeIngredient
 
 
 class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
@@ -70,3 +74,35 @@ class RecipeViewSet(viewsets.ModelViewSet):
     @action(methods=['POST', 'DELETE'], detail=True)
     def shopping_cart(self, request, pk):
         return self.action_post_delete(pk, ShoppingCartSerializer)
+
+    @action(detail=False)
+    def download_shopping_cart(self, request):
+        response = HttpResponse(content_type='application/pdf')
+        response['Content-Disposition'] = "attachment;" \
+                                          " filename='shopping_cart.pdf'"
+        p = canvas.Canvas(response)
+        arial = ttfonts.TTFont('Arial', 'data/arial.ttf')
+        pdfmetrics.registerFont(arial)
+        p.setFont('Arial', 14)
+
+        ingredients = RecipeIngredient.objects.filter(
+            recipe__shopping_cart__user=request.user).annotate(
+            name=F('ingredient__name'),
+            unit=F('ingredient__measurement_unit')).values(
+            'name', 'amount', 'unit')
+
+        ingr_list = {}
+        for i in ingredients:
+            if i['name'] in ingr_list:
+                ingr_list[i['name']][0] += i['amount']
+            else:
+                ingr_list[i['name']] = [i['amount'], i['unit']]
+        height = 700
+
+        p.drawString(100, 750, 'Список покупок')
+        for i, (name, data) in enumerate(ingr_list.items(), start=1):
+            p.drawString(80, height, f'{i}. {name} – {data[0]} {data[1]}')
+            height -= 25
+        p.showPage()
+        p.save()
+        return response
