@@ -70,8 +70,7 @@ class Recipe(models.Model):
         verbose_name='Время приготовления',
         validators=(MinValueValidator(
             limit_value=1,
-            message='Время приготовления не может быть менее одной минуты.'
-            ),
+            message='Время приготовления не может быть менее одной минуты.'),
         )
     )
     author = models.ForeignKey(
@@ -115,8 +114,7 @@ class RecipeIngredient(models.Model):
         verbose_name='Количество',
         validators=(MinValueValidator(
             limit_value=0.01,
-            message='Количество должно быть больше нуля'
-            ),
+            message='Количество должно быть больше нуля'),
         )
     )
 
@@ -131,8 +129,8 @@ class RecipeIngredient(models.Model):
         ]
 
     def __str__(self):
-        return f'{self.recipe}: {self.ingredient.name},' \
-               f' {self.amount}, {self.ingredient.measurement_unit}'
+        return (f'{self.recipe}: {self.ingredient.name},'
+                f' {self.amount}, {self.ingredient.measurement_unit}')
 
 
 class Favorite(models.Model):

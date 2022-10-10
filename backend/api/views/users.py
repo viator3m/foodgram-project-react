@@ -6,8 +6,8 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 
 from api.paginations import LimitPagination
-from users.models import User, Follow
-from api.serializers.users import UsersSerializer, FollowSerializer
+from api.serializers.users import FollowSerializer, UsersSerializer
+from users.models import Follow, User
 
 
 class UsersViewSet(UserViewSet):
@@ -52,6 +52,3 @@ class UsersViewSet(UserViewSet):
             page, many=True,
             context={'request': request})
         return self.get_paginated_response(serializer.data)
-
-
-
