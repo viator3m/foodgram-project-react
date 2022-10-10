@@ -34,6 +34,7 @@
     padding: 12px 18px;
     flex-basis: 370px;
     width: 100%;
+    white-space: pre-wrap;
 }
 .textareaField:focus {
     border: 1px solid #4A61DD;
