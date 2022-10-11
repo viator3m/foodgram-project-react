@@ -5,14 +5,8 @@ from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
 from api.serializers.users import UsersSerializer
-from recipes.models import (
-    Favorite,
-    Ingredient,
-    Recipe,
-    RecipeIngredient,
-    ShoppingCart,
-    Tag
-)
+from recipes.models import (Favorite, Ingredient, Recipe, RecipeIngredient,
+                            ShoppingCart, Tag)
 
 
 class Base64ImageField(serializers.ImageField):
