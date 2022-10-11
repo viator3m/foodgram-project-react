@@ -1,7 +1,7 @@
 import os
 
 from dotenv import load_dotenv
-
+# noqa
 from utils import get_list_allowed
 
 load_dotenv()
