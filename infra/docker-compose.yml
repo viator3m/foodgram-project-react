@@ -1,10 +1,8 @@
-version: '3.3'
+version: '3.8'
 services:
 
   frontend:
-    build:
-      context: ../frontend
-      dockerfile: Dockerfile
+    image: viator3m/foodgram_frontend:v1.0
     volumes:
       - ../frontend/:/app/result_build/
 
@@ -29,9 +27,7 @@ services:
       - backend
 
   backend:
-    build:
-      context: ../backend
-      dockerfile: Dockerfile
+    image: viator3m/foodgram_backend:v1.0
     restart: always
     volumes:
       -  static_value:/app/back_static/

@@ -1,3 +1,5 @@
+![workflow status](https://github.com/viator3m/foodgram-project-react/actions/workflows/foodgram_workflow.yml/badge.svg)
+
 ### Проект Foodgram – Продуктовый помощник
 На этом сервисе пользователи смогут публиковать рецепты, подписываться 
 на публикации других пользователей, добавлять понравившиеся рецепты в список
