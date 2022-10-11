@@ -70,8 +70,8 @@ docker-compose exec backend python manage.py loaddata --exclude contenttypes dat
 ```bash
 cd backend
 python -m venv venv
-. source venv/Scripts/activate (windows)
-. source venv/bin/activate (linux)
+. venv/Scripts/activate (windows)
+. venv/bin/activate (linux)
 pip install --upgade pip
 pip install -r -requirements.txt
 ```
