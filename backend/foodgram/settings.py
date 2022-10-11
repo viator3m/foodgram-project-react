@@ -1,10 +1,13 @@
 import os
 
 from dotenv import load_dotenv
-# noqa
-from utils import get_list_allowed
 
 load_dotenv()
+
+
+def get_list_allowed(allowed: str) -> list:
+    return [host.strip() for host in allowed.split(',') if host.strip()]
+
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
