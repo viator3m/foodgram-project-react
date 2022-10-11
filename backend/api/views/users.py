@@ -12,6 +12,9 @@ from users.models import Follow, User
 
 
 class UsersViewSet(UserViewSet):
+    """Вьюсет для работы с пользователями и подписками.
+    Обработка запросов на создание/получение пользователей и
+    создание/получение/удаления подписок."""
     queryset = User.objects.all()
     serializer_class = UsersSerializer
     permission_classes = (IsAuthenticatedOrReadOnly,)

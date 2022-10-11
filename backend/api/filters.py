@@ -5,6 +5,7 @@ from recipes.models import Ingredient, Recipe
 
 
 class IngredientFilter(FilterSet):
+    """Фильтр ингредиентов по названию"""
     name = filters.CharFilter(method='filter_name')
 
     class Meta:
@@ -12,6 +13,7 @@ class IngredientFilter(FilterSet):
         fields = ('name',)
 
     def filter_name(self, queryset, name, value):
+        """Метод возвращает кверисет с заданным именем ингредиента."""
         return queryset.filter(
             Q(name__istartswith=value) | Q(name__icontains=value)
         ).annotate(
@@ -23,6 +25,7 @@ class IngredientFilter(FilterSet):
 
 
 class RecipeFilter(FilterSet):
+    """Фильтр рецептов по автору/тегу/подписке/наличию в списке покупок"""
     tags = filters.AllValuesMultipleFilter(field_name='tags__slug')
     is_favorited = filters.BooleanFilter(method='filter_is_favorited')
     is_in_shopping_cart = filters.BooleanFilter(
