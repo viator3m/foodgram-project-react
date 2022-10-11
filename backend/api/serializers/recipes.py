@@ -65,6 +65,17 @@ class RecipeSerializer(serializers.ModelSerializer):
         fields = ('id', 'tags', 'author', 'ingredients',
                   'name', 'image', 'text', 'cooking_time')
 
+    def validate(self, data):
+        list_ingr = [item['ingredient'] for item in data['ingredients']]
+        all_ingredients, distinct_ingredients = (
+            len(list_ingr), len(set(list_ingr)))
+
+        if all_ingredients != distinct_ingredients:
+            raise ValidationError(
+                {'error': 'Ингредиенты должны быть уникальными'}
+            )
+        return data
+
     def get_ingredients(self, recipe, ingredients):
         RecipeIngredient.objects.bulk_create(
             RecipeIngredient(

@@ -2,7 +2,8 @@ from django.shortcuts import get_object_or_404
 from djoser.views import UserViewSet
 from rest_framework import status
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, \
+    IsAuthenticated
 from rest_framework.response import Response
 
 from api.paginations import LimitPagination
@@ -16,6 +17,11 @@ class UsersViewSet(UserViewSet):
     permission_classes = (IsAuthenticatedOrReadOnly,)
     pagination_class = LimitPagination
     http_method_names = ['get', 'post', 'delete', 'head']
+
+    def get_permissions(self):
+        if self.action == 'me':
+            self.permission_classes = (IsAuthenticated, )
+        return super().get_permissions()
 
     @action(methods=['POST', 'DELETE'],
             detail=True,)
