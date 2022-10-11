@@ -49,7 +49,7 @@ class UsersViewSet(UserViewSet):
             return Response({'error': 'Вы не подписаны на этого пользователя'},
                             status=status.HTTP_400_BAD_REQUEST)
 
-    @action(detail=False)
+    @action(detail=False, permission_classes=[IsAuthenticated])
     def subscriptions(self, request):
         user = request.user
         follows = User.objects.filter(following__user=user)
