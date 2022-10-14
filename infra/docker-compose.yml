@@ -20,9 +20,9 @@ services:
     volumes:
       - ./nginx.conf:/etc/nginx/conf.d/default.conf
       - ../frontend/build:/usr/share/nginx/html/
+      - ../docs/:/usr/share/nginx/html/api/docs/
       - static_value:/var/html/back_static/
       - media_value:/var/html/back_media/
-      - docs:/app/api/docs/
     depends_on:
       - backend
 
@@ -32,7 +32,6 @@ services:
     volumes:
       -  static_value:/app/back_static/
       -  media_value:/app/back_media/
-      -  docs:/usr/share/nginx/html/api/docs/
     depends_on:
       - db
     env_file:
@@ -42,4 +41,3 @@ volumes:
   static_value:
   media_value:
   postgres:
-  docs:
