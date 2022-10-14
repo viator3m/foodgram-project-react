@@ -60,7 +60,7 @@ docker-compose exec backend python manage.py load_data
 ```
 - или наполните базу тестовыми данными (включают посты и пользователей)
 ```bash
-docker-compose exec backend python manage.py loaddata --exclude contenttypes data/data.json 
+docker-compose exec backend python manage.py loaddata data/data.json 
 ```
 - Стандартная админ-панель Django доступна по адресу [`https://localhost/admin/`](https://localhost/admin/)
 - Документация к проекту доступна по адресу [`https://localhost/api/docs/`](`https://localhost/api/docs/`)
@@ -101,3 +101,10 @@ DATABASES = {
 ```bash
 python manage.py runserver 
 ```
+
+
+Проект доступен по адресу: [f00dgram.sytes.net](https://f00dgram.sytes.net)
+
+Документация к API проекта: [f00dgram.sytes.net/api/docs/](https://f00dgram.sytes.net/api/docs/)
+
+Доступ в админ-панель: `email` : ad@min.com | `password` : admin
