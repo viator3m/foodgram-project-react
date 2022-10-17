@@ -106,5 +106,3 @@ python manage.py runserver
 Проект доступен по адресу: [f00dgram.sytes.net](https://f00dgram.sytes.net)
 
 Документация к API проекта: [f00dgram.sytes.net/api/docs/](https://f00dgram.sytes.net/api/docs/)
-
-Доступ в админ-панель: `email` : ad@min.com | `password` : admin
